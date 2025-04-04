@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  username        String           @unique
+  password        String
+  games           Game[]           @relation("UserGames")
+  completedLevels CompletedLevel[] @relation("UserLevels")
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@map("users")
+}
+
+model Game {
+  id              String           @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String           @db.ObjectId
+  user            User             @relation("UserGames", fields: [userId], references: [id])
+  completedLevels CompletedLevel[] @relation("GameLevels")
+  totalScore      Int              @default(0)
+  status          String           @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@map("games")
+}
+
+model CompletedLevel {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  gameId        String   @db.ObjectId
+  game          Game     @relation("GameLevels", fields: [gameId], references: [id])
+  userId        String   @db.ObjectId
+  user          User     @relation("UserLevels", fields: [userId], references: [id])
+  score         Int      @default(0)
+  level         Int
+  timeTaken     Int
+  attemptNumber Int      @default(1)
+  createdAt     DateTime @default(now())
+
+  @@map("completedLevels")
+}
