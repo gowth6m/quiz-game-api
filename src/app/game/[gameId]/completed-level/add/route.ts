@@ -41,6 +41,9 @@ export async function POST(
                 totalScore: {
                     increment: score,
                 },
+                totalTimeTaken: {
+                    increment: timeTaken,
+                }
             },
         });
 

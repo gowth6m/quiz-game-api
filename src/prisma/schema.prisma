@@ -25,6 +25,7 @@ model Game {
   user            User             @relation("UserGames", fields: [userId], references: [id])
   completedLevels CompletedLevel[] @relation("GameLevels")
   totalScore      Int              @default(0)
+  totalTimeTaken  Int              @default(0)
   status          String           @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
